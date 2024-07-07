@@ -1,0 +1,37 @@
+{
+	"schemaVersion": 1,
+	"id": "triangulator",
+	"version": "${version}",
+	"name": "Triangulator",
+	"description": "Find the exact location of a stronghold by throwing just 2 eyes of ender!",
+	"authors": [
+		"Slqmy"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "MIT",
+	"icon": "assets/triangulator/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"net.slqmy.triangulator.Triangulator"
+		],
+		"client": [
+			"net.slqmy.triangulator.TriangulatorClient"
+		],
+		"fabric-datagen": [
+			"net.slqmy.triangulator.TriangulatorDataGenerator"
+		]
+	},
+	"mixins": [
+		"triangulator.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.15.3",
+		"minecraft": "~1.20.4",
+		"java": ">=17",
+		"fabric-api": "*"
+	}
+}
