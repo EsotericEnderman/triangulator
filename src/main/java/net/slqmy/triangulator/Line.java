@@ -1,46 +1,62 @@
 package net.slqmy.triangulator;
 
+import net.slqmy.triangulator.util.VectorUtil;
+
+import org.joml.Vector2d;
+
 public class Line {
 
-    private double slope;
-    private double yIntercept;
+    private final Vector2d startingPoint;
+    private final Vector2d directionVector;
 
-    private String dependentVariable;
-    private String independentVariable;
-
-    public Line(double slope, double yIntercept, String dependentVariable, String independentVariable) {
-        this.slope = slope;
-        this.yIntercept = yIntercept;
-
-        this.dependentVariable = dependentVariable;
-        this.independentVariable = independentVariable;
+    public Vector2d getStartingPoint() {
+        return startingPoint;
     }
 
-    public Line(double slope, double yIntercept, String dependentVariable) {
-        this(slope, yIntercept, dependentVariable, "x");
+    public Vector2d getDirectionVector() {
+        return directionVector;
     }
 
-    public Line(double slope, double yIntercept) {
-        this(slope, yIntercept, "y");
+    public Line(Vector2d startingPoint, Vector2d direcitonVector) throws ZeroVectorException {
+        if (VectorUtil.isZeroVector(direcitonVector)) {
+            throw new ZeroVectorException();
+        }
+
+        this.startingPoint = startingPoint;
+        this.directionVector = direcitonVector;
     }
 
-    public double getSlope() {
-        return slope;
+    public boolean includesPoint(Vector2d point) {
+        Vector2d clonedPoint = new Vector2d(point.x, point.y);
+
+        return clonedPoint.equals(startingPoint) || VectorUtil.areLinearlyDependent(clonedPoint.sub(startingPoint), directionVector);
     }
 
-    public double getyIntercept() {
-        return yIntercept;
+    @Override
+    public boolean equals(Object otherObject) {
+        if (super.equals(otherObject)) {
+            return true;
+        }
+
+        if (otherObject instanceof Line otherLine) {
+            if (startingPoint.equals(otherLine.startingPoint) && directionVector.equals(otherLine.directionVector) ) {
+                return true;
+            }
+
+            return includesPoint(otherLine.startingPoint) && VectorUtil.areLinearlyDependent(directionVector, otherLine.directionVector);
+        }
+
+        return false;
     }
 
-    public void setSlope(double slope) {
-        this.slope = slope;
-    }
-
-    public void setyIntercept(double yIntercept) {
-        this.yIntercept = yIntercept;
-    }
-
+    @Override
     public String toString() {
-        return dependentVariable + " = " + slope + independentVariable + " + " + yIntercept;
+        return "{(" + startingPoint.x + ", " + startingPoint.y + ") + t × (" + directionVector.x + ", " + directionVector.y + ") | t ∈ R}";
+    }
+
+    public class ZeroVectorException extends Exception {
+        ZeroVectorException() {
+            super("The direction vector must not be the zero vector (0, 0)!");
+        }
     }
 }
