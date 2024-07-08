@@ -16,7 +16,10 @@ public class EyeOfEnderSpawnListener {
 
     public void registerListener() {
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            Triangulator.LOGGER.debug("Entity {} has been loaded in {}.", entity, world);;
+
             if (entity instanceof EyeOfEnderEntity eyeOfEnder) {
+                Triangulator.LOGGER.debug("Entity is an eye of ender entity.");
                 onEyeOfEnderSpawn(eyeOfEnder);
             }
         });
@@ -29,19 +32,19 @@ public class EyeOfEnderSpawnListener {
 
         Vec3d position = new Vec3d(x, y, z);
 
-        Triangulator.LOGGER.info("Eye of ender spawned at {}, {}, {}.", x, y, z);
+        Triangulator.LOGGER.debug("Eye of ender spawned at {}, {}, {}.", x, y, z);
 
-        Triangulator.LOGGER.info("Comparing location of eye of ender to known throwing locations.");
+        Triangulator.LOGGER.debug("Comparing location of eye of ender to known throwing locations.");
 
         for (Vec3d vector : triangulator.startingPositionEyeMap.keySet()) {
-            Triangulator.LOGGER.info("Comparing {} to {}", position, vector);
+            Triangulator.LOGGER.debug("Comparing {} to {}", position, vector);
 
             if (vector.x == position.x && vector.z == position.z) {
-                Triangulator.LOGGER.info("Vectors are equivalent, setting data for eye of ender.");
+                Triangulator.LOGGER.debug("Location vectors are equivalent, setting data for the eye of ender.");
 
                 triangulator.startingPositionEyeMap.put(vector, eyeOfEnder);
 
-                Triangulator.LOGGER.info("{}: {}", vector, triangulator.startingPositionEyeMap.get(vector));
+                Triangulator.LOGGER.debug("{}: {}", vector, triangulator.startingPositionEyeMap.get(vector));
             }
         }
     }

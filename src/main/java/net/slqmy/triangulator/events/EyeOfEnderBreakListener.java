@@ -21,7 +21,9 @@ public class EyeOfEnderBreakListener {
 
     public void registerListener() {
         ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
+            Triangulator.LOGGER.debug("Entity {} unloaded in world {}.", entity, world);
             if (entity instanceof EyeOfEnderEntity eyeOfEnder) {
+                Triangulator.LOGGER.debug("Entity is an eye of ender entity.");
                 onEyeOfEnderSpawn(eyeOfEnder);
             }
         });
@@ -50,33 +52,26 @@ public class EyeOfEnderBreakListener {
             return;
         }
 
-        Triangulator.LOGGER.info("Eye of ender broken at {}, {}, {}.", x, y, z);
-        Triangulator.LOGGER.info("Its starting position was {}.", startingPosition);
+        Triangulator.LOGGER.debug("Eye of ender broken at {}, {}, {}.", x, y, z);
+        Triangulator.LOGGER.debug("Its starting position was {}.", startingPosition);
 
         Vec3d difference = endPosition.subtract(startingPosition);
 
         double deltaX = difference.x;
         double deltaZ = difference.z;
 
-        Triangulator.LOGGER.info("Δx = {}", deltaX);
-        Triangulator.LOGGER.info("Δz = {}", deltaZ);
-
-        // Vector2d initialPoint = new Vector2d(startingPosition.x, startingPosition.z);
-        // Vector2d directionVector = new Vector2d(difference.x, difference.z);
-
-        // Triangulator.LOGGER.info("The line l of the path of the eye of ender is defined as follows: l = {({}, {}) + ({}, {})t | t > 0}", initialPoint.x, initialPoint.y, directionVector.x, directionVector.y);
-
-        // z = m(x - x_1) + z_1 = mx - mx_1 + z_1
+        Triangulator.LOGGER.debug("Δx = {}", deltaX);
+        Triangulator.LOGGER.debug("Δz = {}", deltaZ);
 
         double slope = deltaZ / deltaX;
         double zIntercept = -slope * startingPosition.x + startingPosition.z;
 
-        Triangulator.LOGGER.info("The slope m = Δz/Δx = {}", slope);
-        Triangulator.LOGGER.info("The z-intercept = {}", zIntercept);
+        Triangulator.LOGGER.debug("The slope m = Δz/Δx = {}", slope);
+        Triangulator.LOGGER.debug("The z-intercept = {}", zIntercept);
 
         Line line = new Line(slope, zIntercept, "z");
 
-        Triangulator.LOGGER.info("The line l of the path of the eye of ender is defined as follows: l: {}", line);
+        Triangulator.LOGGER.debug("The line l of the path of the eye of ender is defined as follows: l: {}", line);
 
         ChatUtil.sendMessage("§7The line §bl §7 which the eye of ender follows is defined as such:");
         ChatUtil.sendMessage("§bl§7: §9z §7= §f" + slope + "§cx §7+ §f" + line.getyIntercept());

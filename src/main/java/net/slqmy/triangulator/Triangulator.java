@@ -20,7 +20,7 @@ public class Triangulator implements ModInitializer {
 
 	@Override
 	public void onInitialize() {
-		LOGGER.info("[Triangulator]: Loading Triangulator mod.");
+		LOGGER.info("[Triangulator]: Initialising Triangulator mod.");
 
 		new EyeOfEnderThrowListener(this).registerListener();
 		new EyeOfEnderSpawnListener(this).registerListener();
