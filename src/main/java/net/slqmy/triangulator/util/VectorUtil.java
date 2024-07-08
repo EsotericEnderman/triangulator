@@ -3,6 +3,10 @@ package net.slqmy.triangulator.util;
 import org.joml.Vector2d;
 
 public class VectorUtil {
+    public static boolean isZeroVector(Vector2d vector) {
+        return vector.x == 0 && vector.y == 0;
+    }
+
     public static boolean areLinearlyDependent(Vector2d vectorA, Vector2d vectorB) {
         double x1 = vectorA.x;
         double y1 = vectorA.y;
