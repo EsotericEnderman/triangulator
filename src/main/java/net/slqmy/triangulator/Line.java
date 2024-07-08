@@ -1,7 +1,5 @@
 package net.slqmy.triangulator;
 
-import java.text.Format;
-
 public class Line {
 
     private double slope;
