@@ -1,8 +1,8 @@
 package net.slqmy.triangulator.events;
 
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.minecraft.world.entity.projectile.EyeOfEnder;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.entity.EyeOfEnderEntity;
+import net.minecraft.util.math.Vec3d;
 import net.slqmy.triangulator.Line;
 import net.slqmy.triangulator.Triangulator;
 import net.slqmy.triangulator.util.ChatUtil;
@@ -21,24 +21,24 @@ public class EyeOfEnderBreakListener {
 
     public void registerListener() {
         ServerEntityEvents.ENTITY_UNLOAD.register((entity, world) -> {
-            if (entity instanceof EyeOfEnder eyeOfEnder) {
+            if (entity instanceof EyeOfEnderEntity eyeOfEnder) {
                 onEyeOfEnderSpawn(eyeOfEnder);
             }
         });
     }
 
-    private void onEyeOfEnderSpawn(@NotNull EyeOfEnder eyeOfEnder) {
+    private void onEyeOfEnderSpawn(@NotNull EyeOfEnderEntity eyeOfEnder) {
         double x = eyeOfEnder.getX();
         double y = eyeOfEnder.getY();
         double z = eyeOfEnder.getZ();
 
-        Vec3 endPosition = new Vec3(x, y, z);
+        Vec3d endPosition = new Vec3d(x, y, z);
 
-        Map<EyeOfEnder, Vec3> eyePositionMap = MapUtil.inverMap(triangulator.startingPositionEyeMap);
-        Vec3 startingPosition = null;
+        Map<EyeOfEnderEntity, Vec3d> eyePositionMap = MapUtil.inverMap(triangulator.startingPositionEyeMap);
+        Vec3d startingPosition = null;
 
-        for (Map.Entry<EyeOfEnder, Vec3> entry : eyePositionMap.entrySet()) {
-            EyeOfEnder eye = entry.getKey();
+        for (Map.Entry<EyeOfEnderEntity, Vec3d> entry : eyePositionMap.entrySet()) {
+            EyeOfEnderEntity eye = entry.getKey();
 
             if (eye.getX() == eyeOfEnder.getX() && eye.getY() == eyeOfEnder.getY()) {
                 startingPosition = entry.getValue();
@@ -53,7 +53,7 @@ public class EyeOfEnderBreakListener {
         Triangulator.LOGGER.info("Eye of ender broken at {}, {}, {}.", x, y, z);
         Triangulator.LOGGER.info("Its starting position was {}.", startingPosition);
 
-        Vec3 difference = endPosition.subtract(startingPosition);
+        Vec3d difference = endPosition.subtract(startingPosition);
 
         double deltaX = difference.x;
         double deltaZ = difference.z;
