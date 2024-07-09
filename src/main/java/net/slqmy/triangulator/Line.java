@@ -2,6 +2,7 @@ package net.slqmy.triangulator;
 
 import net.slqmy.triangulator.util.VectorUtil;
 
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 
 public class Line {
@@ -24,6 +25,13 @@ public class Line {
 
         this.startingPoint = startingPoint;
         this.directionVector = direcitonVector;
+    }
+
+    @NotNull public Vector2d getPointForParameterValue(double parameterValue) {
+        Vector2d startingPointClone = VectorUtil.cloneVector(startingPoint);
+        Vector2d directionVectorClone = VectorUtil.cloneVector(directionVector); 
+
+        return startingPointClone.add(directionVectorClone.mul(parameterValue));
     }
 
     public boolean includesPoint(Vector2d point) {
