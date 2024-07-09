@@ -35,6 +35,18 @@ public class Line {
         return startingPointClone.add(directionVectorClone.mul(parameterValue));
     }
 
+    @NotNull public double getParameterValueForPoint(Vector2d point) throws PointNotOnLineException {
+        if (!includesPoint(point)) {
+            throw new PointNotOnLineException();
+        }
+
+        Vector2d pointClone = VectorUtil.cloneVector(point);
+
+        Vector2d distanceFromStartingPoint = pointClone.sub(startingPoint);
+
+        return distanceFromStartingPoint.x / directionVector.x;
+    }
+
     @Nullable public Vector2d getIntersectionPoint(Line otherLine) throws SameLineException {
         if (this.equals(otherLine)) {
             throw new SameLineException();
@@ -114,6 +126,12 @@ public class Line {
     public class SameLineException extends Exception {
         SameLineException() {
             super("Cannot check intersection with the same line.");
+        }
+    }
+
+    public class PointNotOnLineException extends Exception {
+        PointNotOnLineException() {
+            super("Point is not on the line.");
         }
     }
 }
