@@ -3,6 +3,7 @@ package net.slqmy.triangulator;
 import net.slqmy.triangulator.util.VectorUtil;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector2d;
 
 public class Line {
@@ -32,6 +33,48 @@ public class Line {
         Vector2d directionVectorClone = VectorUtil.cloneVector(directionVector); 
 
         return startingPointClone.add(directionVectorClone.mul(parameterValue));
+    }
+
+    @Nullable public Vector2d getIntersectionPoint(Line otherLine) throws SameLineException {
+        if (this.equals(otherLine)) {
+            throw new SameLineException();
+        }
+
+        Vector2d otherDirectionVector = otherLine.directionVector;
+
+        if (VectorUtil.areLinearlyDependent(otherDirectionVector, directionVector)) { // The lines are parallel but not equal
+            return null;
+        }
+
+        // Simultaneous equations to solve for t:
+        // 1. x01 + dx1 * t1 = x02 + dx2 * t2
+        // 2. y01 + dy1 * t1 = y02 + dy2 * t2
+
+        // 1. => t1 = (x02 + dx2 * t2 - x01) / dx1
+        // 2. => y01 + dy1 * (x02 + dx2 * t2 - x01) / dx1 = y02 + dy2 * t2
+        // 2. => y01 + (dy1 * x02 + dy1 * dx2 * t2 - dy1 * x01) / dx1 = y02 + dy2 * t2
+        // 2. => y01 * dx1 + dy1 * x02 + dy1 * dx2 * t2 - dy1 * x01 = y02 * dx1 + dy2 * t2 * dx1
+        // 2. => y01 * dx1 + dy1 * x02 - dy1 * x01 = y02 * dx1 + dy2 * t2 * dx1 - dy1 * dx2 * t2
+        // 2. => y01 * dx1 + dy1 * x02 - dy1 * x01 = y02 * dx1 + t2 * (dy2 * dx1 - dy1 * dx2)
+        // 2. => t2 = (y01 * dx1 + dy1 * x02 - dy1 * x01 - y02 * dx1) / (dy2 * dx1 - dy1 * dx2)
+
+        Vector2d otherStartingPoint = otherLine.startingPoint;
+
+        double x01 = startingPoint.x;
+        double dx1 = directionVector.x;
+
+        double x02 = otherStartingPoint.x;
+        double dx2 = otherDirectionVector.x;
+
+        double y01 = startingPoint.y;
+        double dy1 = directionVector.y;
+
+        double y02 = otherStartingPoint.y;
+        double dy2 = otherDirectionVector.y;
+
+        double t2 = (y01 * dx1 + dy1 * x02 - dy1 * x01 - y02 * dx1) / (dy2 * dx1 - dy1 * dx2);
+
+        return otherLine.getPointForParameterValue(t2);
     }
 
     public boolean includesPoint(Vector2d point) {
@@ -65,6 +108,12 @@ public class Line {
     public class ZeroVectorException extends Exception {
         ZeroVectorException() {
             super("The direction vector must not be the zero vector (0, 0)!");
+        }
+    }
+
+    public class SameLineException extends Exception {
+        SameLineException() {
+            super("Cannot check intersection with the same line.");
         }
     }
 }
