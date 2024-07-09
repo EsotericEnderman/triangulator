@@ -23,4 +23,8 @@ public class VectorUtil {
 
         return quotient1 == quotient2 || (x1 == 0 && x2 == 0) || (y1 == 0 && y2 == 0);
     }
+
+    public static Vector2d cloneVector(Vector2d originalVector) {
+        return new Vector2d(originalVector.x, originalVector.y);
+    }
 }
