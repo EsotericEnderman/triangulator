@@ -1,5 +1,7 @@
 package net.slqmy.triangulator;
 
+import java.util.ArrayList;
+
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.entity.EyeOfEnderEntity;
 import net.minecraft.util.math.Vec3d;
@@ -17,6 +19,7 @@ public class Triangulator implements ModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public HashMap<Vec3d, EyeOfEnderEntity> startingPositionEyeMap = new HashMap<>();
+	public ArrayList<Line> eyeOfEnderDirections = new ArrayList<>();
 
 	@Override
 	public void onInitialize() {

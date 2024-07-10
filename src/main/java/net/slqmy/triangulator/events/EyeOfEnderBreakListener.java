@@ -4,12 +4,14 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.minecraft.entity.EyeOfEnderEntity;
 import net.minecraft.util.math.Vec3d;
 import net.slqmy.triangulator.Line;
+import net.slqmy.triangulator.Line.SameLineException;
 import net.slqmy.triangulator.Line.ZeroVectorException;
 import net.slqmy.triangulator.Triangulator;
 import net.slqmy.triangulator.util.MapUtil;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector2d;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 public class EyeOfEnderBreakListener {
@@ -70,6 +72,28 @@ public class EyeOfEnderBreakListener {
             return;
         }
 
-        Triangulator.LOGGER.debug("The line l of the path of the eye of ender is defined as follows: l = {}", eyeOfEnderDirection);
+        Triangulator.LOGGER.info("The line l of the path of the eye of ender is defined as follows: l = {}", eyeOfEnderDirection);
+
+        ArrayList<Line> eyeOfEnderDriections = triangulator.eyeOfEnderDirections;
+
+        if (!eyeOfEnderDriections.contains(eyeOfEnderDirection)) {
+            for (Line direction : eyeOfEnderDriections) {
+                Vector2d intersection;
+
+                try {
+                    intersection = direction.getIntersectionPoint(eyeOfEnderDirection);
+                } catch (SameLineException exception) {
+                    continue;
+                }
+
+                if (intersection == null) {
+                    continue;
+                }
+
+                Triangulator.LOGGER.info("Intersection of the two lines {} & {} found at {}", eyeOfEnderDirection, direction, intersection);
+            }
+
+            triangulator.eyeOfEnderDirections.add(eyeOfEnderDirection);
+        }
     }
 }
